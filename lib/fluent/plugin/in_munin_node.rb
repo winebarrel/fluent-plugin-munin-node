@@ -33,7 +33,6 @@ class Fluent::MuninNodeInput < Fluent::Input
   def start
     super
 
-    @node = Munin::Node.new(@node_host, @node_port)
     @loop = Coolio::Loop.new
     timer = TimerWatcher.new(@interval, true, log, &method(:fetch_items))
     @loop.attach(timer)
@@ -46,9 +45,6 @@ class Fluent::MuninNodeInput < Fluent::Input
 
     # XXX: Comment out for exit soon. Is it OK?
     #@thread.join
-
-    @node.disconnect
-    @node.connection.close
   end
 
   private
@@ -63,9 +59,12 @@ class Fluent::MuninNodeInput < Fluent::Input
   def fetch_items
     values_by_plugin = {}
 
-    @node.list.each do |plugin|
+    # It's connected every fetch of metrics.
+    node = Munin::Node.new(@node_host, @node_port)
+
+    node.list.each do |plugin|
       begin
-        plugin_values = @node.fetch(plugin)
+        plugin_values = node.fetch(plugin)
         values_by_plugin.update(plugin_values)
       rescue => e
         log.warn("#{plugin}: #{e.message}")

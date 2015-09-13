@@ -50,7 +50,7 @@ Or install it yourself as:
 ```
 2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","datasource":"user","value":"4192","hostname":"my-host"}
 2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","datasource":"nice","value":"0","hostname":"my-host"}
-2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","datasource":"system","value":"1935","hostname":"my-host"}```
+2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","datasource":"system","value":"1935","hostname":"my-host"}
 ```
 
 ## Get munin datasources as a single record

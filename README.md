@@ -1,8 +1,6 @@
-# Fluent::Plugin::Munin::Node
+# fluent-plugin-munin-node
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fluent/plugin/munin/node`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Fluentd input plugin for Munin node.
 
 ## Installation
 
@@ -20,22 +18,51 @@ Or install it yourself as:
 
     $ gem install fluent-plugin-munin-node
 
+## Configuration
+
+```apache
+<source>
+  type munin_node
+
+  #node_host 127.0.0.1
+  #node_port 10050
+  #interval 60
+  #tag munin.item
+  #plugin_key plugin
+  #datasource_key datasource
+  #item_value_key value
+  #extra {}
+  #bulk false
+</source>
+```
+
 ## Usage
 
-TODO: Write usage instructions here
+### Get munin datasources as multiple records
 
-## Development
+```apache
+<source>
+  type munin_node
+  extra {"hostname", "my-host"}
+</source>
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```
+2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","datasource":"user","value":"4192","hostname":"my-host"}
+2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","datasource":"nice","value":"0","hostname":"my-host"}
+2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","datasource":"system","value":"1935","hostname":"my-host"}```
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+## Get munin datasources as a single record
 
-## Contributing
+```apache
+<source>
+  type munin_node
+  extra {"hostname", "my-host"}
+  bulk true
+</source>
+```
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/fluent-plugin-munin-node.
-
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
+```
+2015-01-02 12:30:40 +0000 munin.item: {"cpu":{"user":"4112","nice":"0","system":"1894",...,"hostname":"my-host"}
+```

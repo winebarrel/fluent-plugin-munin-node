@@ -16,7 +16,7 @@ class Fluent::MuninNodeInput < Fluent::Input
   config_param :interval,             :time,    :default => 60
   config_param :tag,                  :string,  :default => 'munin.item'
   config_param :plugin_key,           :string,  :default => 'plugin'
-  config_param :datasource_name_key,  :string,  :default => 'name'
+  config_param :datasource_key,       :string,  :default => 'datasource'
   config_param :datasource_value_key, :string,  :default => 'value'
   config_param :extra,                :hash,    :default => {}
   config_param :bulk,                 :bool,    :default => false
@@ -82,11 +82,11 @@ class Fluent::MuninNodeInput < Fluent::Input
     if @bulk
       router.emit(@tag, time.to_i, values_by_plugin.merge(extra))
     else
-      values_by_plugin.each do |plugin, value_by_name|
-        value_by_name.each do |name, value|
+      values_by_plugin.each do |plugin, value_by_datasource|
+        value_by_datasource.each do |datasource, value|
           record = {
             @plugin_key => plugin,
-            @datasource_name_key => name,
+            @datasource_key => datasource,
             @datasource_value_key => value,
           }
 

@@ -30,7 +30,7 @@ Or install it yourself as:
   #tag munin.item
   #plugin_key plugin
   #datasource_key datasource
-  #item_value_key value
+  #datasource_value_key value
   #extra {}
   #bulk false
 </source>

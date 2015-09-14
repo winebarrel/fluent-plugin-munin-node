@@ -29,8 +29,8 @@ Or install it yourself as:
   #interval 60
   #tag munin.item
   #plugin_key plugin
-  #datasource_key datasource
-  #datasource_value_key value
+  #field_key field
+  #value_key value
   #extra {}
   #bulk false
 </source>
@@ -38,7 +38,7 @@ Or install it yourself as:
 
 ## Usage
 
-### Get munin datasources as multiple records
+### Get munin data as multiple records
 
 ```apache
 <source>
@@ -48,12 +48,12 @@ Or install it yourself as:
 ```
 
 ```
-2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","datasource":"user","value":"4192","hostname":"my-host"}
-2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","datasource":"nice","value":"0","hostname":"my-host"}
-2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","datasource":"system","value":"1935","hostname":"my-host"}
+2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","field":"user","value":"4192","hostname":"my-host"}
+2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","field":"nice","value":"0","hostname":"my-host"}
+2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","field":"system","value":"1935","hostname":"my-host"}
 ```
 
-## Get munin datasources as a single record
+## Get munin data as a single record
 
 ```apache
 <source>

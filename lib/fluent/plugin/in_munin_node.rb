@@ -11,15 +11,15 @@ class Fluent::MuninNodeInput < Fluent::Input
     define_method('router') { Fluent::Engine }
   end
 
-  config_param :node_host,            :string,  :default => '127.0.0.1'
-  config_param :node_port,            :integer, :default => 4949
-  config_param :interval,             :time,    :default => 60
-  config_param :tag,                  :string,  :default => 'munin.item'
-  config_param :plugin_key,           :string,  :default => 'plugin'
-  config_param :datasource_key,       :string,  :default => 'datasource'
-  config_param :datasource_value_key, :string,  :default => 'value'
-  config_param :extra,                :hash,    :default => {}
-  config_param :bulk,                 :bool,    :default => false
+  config_param :node_host,   :string,  :default => '127.0.0.1'
+  config_param :node_port,   :integer, :default => 4949
+  config_param :interval,    :time,    :default => 60
+  config_param :tag,         :string,  :default => 'munin.item'
+  config_param :plugin_key,  :string,  :default => 'plugin'
+  config_param :field_key,   :string,  :default => 'field'
+  config_param :value_key,   :string,  :default => 'value'
+  config_param :extra,       :hash,    :default => {}
+  config_param :bulk,        :bool,    :default => false
 
   def initialize
     super
@@ -81,12 +81,12 @@ class Fluent::MuninNodeInput < Fluent::Input
     if @bulk
       router.emit(@tag, time.to_i, values_by_plugin.merge(extra))
     else
-      values_by_plugin.each do |plugin, value_by_datasource|
-        value_by_datasource.each do |datasource, value|
+      values_by_plugin.each do |plugin, value_by_field|
+        value_by_field.each do |fieldname, value|
           record = {
             @plugin_key => plugin,
-            @datasource_key => datasource,
-            @datasource_value_key => value,
+            @field_key => fieldname,
+            @value_key => value,
           }
 
           router.emit(@tag, time.to_i, record.merge(extra))

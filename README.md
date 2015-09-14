@@ -2,6 +2,9 @@
 
 Fluentd input plugin for Munin node.
 
+[![Gem Version](https://badge.fury.io/rb/fluent-plugin-munin-node.svg)](http://badge.fury.io/rb/fluent-plugin-munin-node)
+[![Build Status](https://travis-ci.org/winebarrel/fluent-plugin-munin-node.svg)](https://travis-ci.org/winebarrel/fluent-plugin-munin-node)
+
 ## Installation
 
 Add this line to your application's Gemfile:

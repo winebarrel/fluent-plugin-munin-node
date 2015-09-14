@@ -86,7 +86,7 @@ class Fluent::MuninNodeInput < Fluent::Input
           record = {
             @plugin_key => plugin,
             @field_key => fieldname,
-            @value_key => value,
+            @value_key => value =~ /\./ ? value.to_f : value.to_i,
           }
 
           router.emit(@tag, time.to_i, record.merge(extra))

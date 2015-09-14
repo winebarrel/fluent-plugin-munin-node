@@ -27,8 +27,9 @@ Or install it yourself as:
   #node_host 127.0.0.1
   #node_port 10050
   #interval 60
-  #tag munin.item
-  #plugin_key plugin
+  #tag_prefix munin
+  #bulk_suffix metrics
+  #service_key service
   #field_key field
   #value_key value
   #extra {}
@@ -48,9 +49,9 @@ Or install it yourself as:
 ```
 
 ```
-2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","field":"user","value":"4192","hostname":"my-host"}
-2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","field":"nice","value":"0","hostname":"my-host"}
-2015-91-02 12:30:09 +0000 munin.item: {"plugin":"cpu","field":"system","value":"1935","hostname":"my-host"}
+2015-91-02 12:30:09 +0000 munin.cpu.user: {"service":"cpu","field":"user","value":"4192","hostname":"my-host"}
+2015-91-02 12:30:09 +0000 munin.cpu.nice: {"service":"cpu","field":"nice","value":"0","hostname":"my-host"}
+2015-91-02 12:30:09 +0000 munin.cpu.system: {"service":"cpu","field":"system","value":"1935","hostname":"my-host"}
 ```
 
 ## Get munin data as a single record
@@ -64,5 +65,5 @@ Or install it yourself as:
 ```
 
 ```
-2015-01-02 12:30:40 +0000 munin.item: {"cpu":{"user":"4112","nice":"0","system":"1894",...,"hostname":"my-host"}
+2015-01-02 12:30:40 +0000 munin.metrics: {"cpu":{"user":"4112","nice":"0","system":"1894",...,"hostname":"my-host"}
 ```

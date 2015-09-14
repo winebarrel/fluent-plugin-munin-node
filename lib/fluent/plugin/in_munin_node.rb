@@ -14,8 +14,9 @@ class Fluent::MuninNodeInput < Fluent::Input
   config_param :node_host,   :string,  :default => '127.0.0.1'
   config_param :node_port,   :integer, :default => 4949
   config_param :interval,    :time,    :default => 60
-  config_param :tag,         :string,  :default => 'munin.item'
-  config_param :plugin_key,  :string,  :default => 'plugin'
+  config_param :tag_prefix,  :string,  :default => 'munin'
+  config_param :bulk_suffix, :string,  :default => 'metrics'
+  config_param :service_key, :string,  :default => 'service'
   config_param :field_key,   :string,  :default => 'field'
   config_param :value_key,   :string,  :default => 'value'
   config_param :extra,       :hash,    :default => {}
@@ -57,39 +58,42 @@ class Fluent::MuninNodeInput < Fluent::Input
   end
 
   def fetch_items
-    values_by_plugin = {}
+    values_by_service = {}
 
     # It's connected every fetch of metrics.
     node = Munin::Node.new(@node_host, @node_port)
 
-    node.list.each do |plugin|
+    node.list.each do |service|
       begin
-        plugin_values = node.fetch(plugin)
-        values_by_plugin.update(plugin_values)
+        service_values = node.fetch(service)
+        values_by_service.update(service_values)
       rescue => e
-        log.warn("#{plugin}: #{e.message}")
+        log.warn("#{service}: #{e.message}")
         log.warn_backtrace(e.backtrace)
       end
     end
 
-    emit_items(values_by_plugin)
+    emit_items(values_by_service)
   end
 
-  def emit_items(values_by_plugin)
+  def emit_items(values_by_service)
     time = Time.now
 
     if @bulk
-      router.emit(@tag, time.to_i, values_by_plugin.merge(extra))
+      tag = @tag_prefix + '.' + @bulk_suffix
+      router.emit(tag, time.to_i, values_by_service.merge(extra))
     else
-      values_by_plugin.each do |plugin, value_by_field|
+      values_by_service.each do |service, value_by_field|
         value_by_field.each do |fieldname, value|
+          tag = [@tag_prefix, service, fieldname].join('.')
+
           record = {
-            @plugin_key => plugin,
+            @service_key => service,
             @field_key => fieldname,
             @value_key => value =~ /\./ ? value.to_f : value.to_i,
           }
 
-          router.emit(@tag, time.to_i, record.merge(extra))
+          router.emit(tag, time.to_i, record.merge(extra))
         end
       end
     end

@@ -79,7 +79,9 @@ class Fluent::MuninNodeInput < Fluent::Input
       end
     end
 
-    emit_items(values_by_service)
+    unless values_by_service.empty?
+      emit_items(values_by_service)
+    end
   end
 
   def emit_items(values_by_service)

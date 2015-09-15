@@ -212,4 +212,27 @@ describe Fluent::MuninNodeInput do
       ]
     end
   end
+
+  context 'when munin service is empty' do
+    let(:fluentd_conf) do
+      default_fluentd_conf.merge(exclude_service: '.*')
+    end
+
+    it do
+      is_expected.to be_empty
+    end
+  end
+
+  context 'when munin service is empty with bulk' do
+    let(:fluentd_conf) do
+      default_fluentd_conf.merge(
+        exclude_service: '.*',
+        bulk: true
+      )
+    end
+
+    it do
+      is_expected.to be_empty
+    end
+  end
 end

@@ -76,11 +76,9 @@ class Fluent::MuninNodeInput < Fluent::Input
   end
 
   def emit_items(values_by_service)
-    time = Time.now
-
     if @bulk
       tag = @tag_prefix + '.' + @bulk_suffix
-      router.emit(tag, time.to_i, values_by_service.merge(extra))
+      router.emit(tag, Fluent::Engine.now, values_by_service.merge(extra))
     else
       values_by_service.each do |service, value_by_field|
         value_by_field.each do |fieldname, value|
@@ -92,7 +90,7 @@ class Fluent::MuninNodeInput < Fluent::Input
             @value_key => value =~ /\./ ? value.to_f : value.to_i,
           }
 
-          router.emit(tag, time.to_i, record.merge(extra))
+          router.emit(tag, Fluent::Engine.now, record.merge(extra))
         end
       end
     end

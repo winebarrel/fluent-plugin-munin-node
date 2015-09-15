@@ -174,4 +174,42 @@ describe Fluent::MuninNodeInput do
       expect(error_messages).to eq ["cpu: unexpected error", "df: unexpected error"]
     end
   end
+
+  context 'when get munin services with include_service' do
+    let(:fluentd_conf) do
+      default_fluentd_conf.merge(:include_service => 'cpu')
+    end
+
+    it do
+      is_expected.to match_array [
+        ["munin.cpu.guest", 1432492200, {"service"=>"cpu", "field"=>"guest", "value"=>0}],
+        ["munin.cpu.idle", 1432492200, {"service"=>"cpu", "field"=>"idle", "value"=>89532}],
+        ["munin.cpu.iowait", 1432492200, {"service"=>"cpu", "field"=>"iowait", "value"=>37}],
+        ["munin.cpu.irq", 1432492200, {"service"=>"cpu", "field"=>"irq", "value"=>0}],
+        ["munin.cpu.nice", 1432492200, {"service"=>"cpu", "field"=>"nice", "value"=>0}],
+        ["munin.cpu.softirq", 1432492200, {"service"=>"cpu", "field"=>"softirq", "value"=>27}],
+        ["munin.cpu.steal", 1432492200, {"service"=>"cpu", "field"=>"steal", "value"=>0}],
+        ["munin.cpu.system", 1432492200, {"service"=>"cpu", "field"=>"system", "value"=>507}],
+        ["munin.cpu.user", 1432492200, {"service"=>"cpu", "field"=>"user", "value"=>556}],
+      ]
+    end
+  end
+
+  context 'when get munin services with exclude_service' do
+    let(:fluentd_conf) do
+      default_fluentd_conf.merge(exclude_service: 'cpu')
+    end
+
+    it do
+      is_expected.to match_array [
+        ["munin.df._dev_sda1", 1432492200, {"service"=>"df", "field"=>"_dev_sda1", "value"=>4.60792528975668}],
+        ["munin.df._run", 1432492200, {"service"=>"df", "field"=>"_run", "value"=>0.685586734693878}],
+        ["munin.df._run_lock", 1432492200, {"service"=>"df", "field"=>"_run_lock", "value"=>0}],
+        ["munin.df._run_shm", 1432492200, {"service"=>"df", "field"=>"_run_shm", "value"=>0}],
+        ["munin.df._run_user", 1432492200, {"service"=>"df", "field"=>"_run_user", "value"=>0}],
+        ["munin.df._sys_fs_cgroup", 1432492200, {"service"=>"df", "field"=>"_sys_fs_cgroup", "value"=>0}],
+        ["munin.df.vagrant", 1432492200, {"service"=>"df", "field"=>"vagrant", "value"=>36.4856735523352}],
+      ]
+    end
+  end
 end

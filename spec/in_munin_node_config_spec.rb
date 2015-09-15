@@ -19,6 +19,8 @@ describe 'Fluent::MuninNodeInput#configure' do
       expect(driver.instance.value_key).to eq 'value'
       expect(driver.instance.extra).to eq({})
       expect(driver.instance.bulk).to be_falsey
+      expect(driver.instance.include_service).to be_nil
+      expect(driver.instance.exclude_service).to be_nil
     end
   end
 
@@ -35,6 +37,8 @@ describe 'Fluent::MuninNodeInput#configure' do
         value_key: 'value2',
         extra: '{"foo":"bar"}',
         bulk: true,
+        include_service: 'cpu',
+        exclude_service: 'df',
       }
     end
 
@@ -49,6 +53,8 @@ describe 'Fluent::MuninNodeInput#configure' do
       expect(driver.instance.value_key).to eq 'value2'
       expect(driver.instance.extra).to eq({"foo"=>"bar"})
       expect(driver.instance.bulk).to be_truthy
+      expect(driver.instance.include_service).to eq /cpu/
+      expect(driver.instance.exclude_service).to eq /df/
     end
   end
 end

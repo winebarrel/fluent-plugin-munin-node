@@ -37,6 +37,8 @@ Or install it yourself as:
   #value_key value
   #extra {}
   #bulk false
+  #include_service (cpu|entropy) # regular expression
+  #exclude_service df.*          # regular expression
 </source>
 ```
 

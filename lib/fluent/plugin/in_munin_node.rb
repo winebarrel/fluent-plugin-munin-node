@@ -44,7 +44,7 @@ class Fluent::MuninNodeInput < Fluent::Input
     @loop.watchers.each(&:detach)
     @loop.stop
 
-    # XXX: Comment out for exit soon. Is it OK?
+    # XXX: Comment out for exit quickly. Is it OK?
     #@thread.join
   end
 
@@ -60,7 +60,6 @@ class Fluent::MuninNodeInput < Fluent::Input
   def fetch_items
     values_by_service = {}
 
-    # It's connected every fetch of metrics.
     node = Munin::Node.new(@node_host, @node_port)
 
     node.list.each do |service|

@@ -11,18 +11,20 @@ class Fluent::MuninNodeInput < Fluent::Input
     define_method('router') { Fluent::Engine }
   end
 
-  config_param :node_host,       :string,  :default => '127.0.0.1'
-  config_param :node_port,       :integer, :default => 4949
-  config_param :interval,        :time,    :default => 60
-  config_param :tag_prefix,      :string,  :default => 'munin'
-  config_param :bulk_suffix,     :string,  :default => 'metrics'
-  config_param :service_key,     :string,  :default => 'service'
-  config_param :field_key,       :string,  :default => 'field'
-  config_param :value_key,       :string,  :default => 'value'
-  config_param :extra,           :hash,    :default => {}
-  config_param :bulk,            :bool,    :default => false
-  config_param :include_service, :string,  :default => nil
-  config_param :exclude_service, :string,  :default => nil
+  config_param :node_host,        :string,  :default => '127.0.0.1'
+  config_param :node_port,        :integer, :default => 4949
+  config_param :interval,         :time,    :default => 60
+  config_param :tag_prefix,       :string,  :default => 'munin'
+  config_param :bulk_suffix,      :string,  :default => 'metrics'
+  config_param :service_key,      :string,  :default => 'service'
+  config_param :field_key,        :string,  :default => 'field'
+  config_param :value_key,        :string,  :default => 'value'
+  config_param :extra,            :hash,    :default => {}
+  config_param :bulk,             :bool,    :default => false
+  config_param :include_service,  :string,  :default => nil
+  config_param :exclude_service,  :string,  :default => nil
+  config_param :include_hostname, :bool,    :default => false
+  config_param :hostname_key,     :string,  :default => 'hostname'
 
   def initialize
     super
@@ -34,6 +36,10 @@ class Fluent::MuninNodeInput < Fluent::Input
 
     @include_service = Regexp.new(@include_service) if @include_service
     @exclude_service = Regexp.new(@exclude_service) if @exclude_service
+
+    if @include_hostname
+      @extra.update(@hostname_key => hostname)
+    end
   end
 
   def start
@@ -119,6 +125,10 @@ class Fluent::MuninNodeInput < Fluent::Input
     end
 
     services
+  end
+
+  def hostname
+    `hostname`.strip
   end
 
   class TimerWatcher < Coolio::TimerWatcher

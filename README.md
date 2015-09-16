@@ -39,6 +39,8 @@ Or install it yourself as:
   #bulk false
   #include_service (cpu|entropy) # regular expression
   #exclude_service df.*          # regular expression
+  #include_hostname false
+  #hostname_key hostname
 </source>
 ```
 

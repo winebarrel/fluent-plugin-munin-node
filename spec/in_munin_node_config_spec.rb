@@ -1,11 +1,15 @@
 describe 'Fluent::MuninNodeInput#configure' do
   let(:fluentd_conf) { {} }
+  let(:before_create_driver) {}
 
   let(:driver) do
+    before_create_driver
     create_driver(fluentd_conf)
   end
 
-  subject { create_driver(fluentd_conf).instance }
+  subject do
+    driver.instance
+  end
 
   context 'when default' do
     it do
@@ -21,6 +25,8 @@ describe 'Fluent::MuninNodeInput#configure' do
       expect(driver.instance.bulk).to be_falsey
       expect(driver.instance.include_service).to be_nil
       expect(driver.instance.exclude_service).to be_nil
+      expect(driver.instance.include_hostname).to be_falsey
+      expect(driver.instance.hostname_key).to eq 'hostname'
     end
   end
 
@@ -39,7 +45,13 @@ describe 'Fluent::MuninNodeInput#configure' do
         bulk: true,
         include_service: 'cpu',
         exclude_service: 'df',
+        include_hostname: true,
+        hostname_key: 'hostname2'
       }
+    end
+
+    let(:before_create_driver) do
+      allow_any_instance_of(Fluent::MuninNodeInput).to receive(:hostname) { 'my-host2' }
     end
 
     it do
@@ -51,10 +63,12 @@ describe 'Fluent::MuninNodeInput#configure' do
       expect(driver.instance.service_key).to eq 'service2'
       expect(driver.instance.field_key).to eq 'field2'
       expect(driver.instance.value_key).to eq 'value2'
-      expect(driver.instance.extra).to eq({"foo"=>"bar"})
+      expect(driver.instance.extra).to eq({"foo"=>"bar", "hostname2"=>"my-host2"})
       expect(driver.instance.bulk).to be_truthy
       expect(driver.instance.include_service).to eq /cpu/
       expect(driver.instance.exclude_service).to eq /df/
+      expect(driver.instance.include_hostname).to be_truthy
+      expect(driver.instance.hostname_key).to eq 'hostname2'
     end
   end
 end
